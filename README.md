@@ -21,7 +21,42 @@ perintah `deploy.sh`** dari Google (tersedia gratis di Cloud Shell).
 | `.env.example` | Variabel yang bisa kamu set sebelum deploy |
 | `CLAUDE.md` | Catatan arsitektur untuk asisten/agen |
 
-## Prasyarat (sekali, ±10 menit)
+## 🚀 Mulai deploy — 1 klik
+
+Buka Cloud Shell dengan repo **sudah ter-clone otomatis**:
+
+[![Buka di Google Cloud Shell](https://gstatic.com/cloudshell/images/open-btn.png)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/mra-rich/hermes-gcp-template.git&cloudshell_workspace=hermes-gcp-template&cloudshell_tutorial=README.md)
+
+setelah terminal terbuka, cukup **3 perintah**:
+
+```bash
+cd hermes-gcp-template        # repo sudah ada, masuk folder
+cp .env.example .env          # (opsional, sekali — mau ganti password/region?)
+./deploy.sh                   # ✅ jalan! bikin VM + buka port + nyalain Hermes
+```
+
+> Kalau `cp .env.example .env` dilewati, aman — semua pakai nilai bawaan
+> (admin/change-me, region free tier). Dua langkah minimal cukup satu baris:
+> `./deploy.sh`.
+
+## Link yang dibutuhkan (semua tuju langsung)
+
+| Keperluan | Link |
+|---|---|
+| Buat project GCP | https://console.cloud.google.com/projectcreate |
+| Cek / link billing | https://console.cloud.google.com/billing |
+| Buka terminal Cloud Shell | https://console.cloud.google.com/cloudshell |
+| Enable Compute Engine API | https://console.cloud.google.com/apis/library/compute.googleapis.com |
+| Daftar VM kamu | https://console.cloud.google.com/compute/instances |
+| Lihat repo ini | https://github.com/mra-rich/hermes-gcp-template |
+
+Biar praktis, lakukan dengan urutan ini:
+1. Klik **Buat project** → isi nama → Create (catat Project ID)
+2. Klik **Billing** → pilih akun billing → project ter-link (wajib walau free tier)
+3. Klik **Enable Compute API** → Enable
+4. Klik **Cloud Shell** → ketik 3 perintah di atas ✅
+
+## Prasyarat lengkap (sekali, ±10 menit)
 
 Sebelum 3 langkah deploy, GCP minta 4 hal ini **cukup sekali**. Kalau belum
 dipasang, `./deploy.sh` akan berhenti di tengah dengan pesan error
