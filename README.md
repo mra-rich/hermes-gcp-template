@@ -21,7 +21,38 @@ perintah `deploy.sh`** dari Google (tersedia gratis di Cloud Shell).
 | `.env.example` | Variabel yang bisa kamu set sebelum deploy |
 | `CLAUDE.md` | Catatan arsitektur untuk asisten/agen |
 
-## Cara deploy (3 langkah)
+## Prasyarat (sekali, ±10 menit)
+
+Sebelum 3 langkah deploy, GCP minta 4 hal ini **cukup sekali**. Kalau belum
+dipasang, `./deploy.sh` akan berhenti di tengah dengan pesan error
+(billing/API). Selesaikan ini dulu baru lanjut ke cara deploy.
+
+1. **Akun Google** — login di https://console.cloud.google.com
+2. **Project aktif** — di dropdown kiri atas, pilih project (atau buat baru:
+   **New Project**). Catat **Project ID**-nya (bukan nama).
+3. **Billing ter-link** — menu ☰ → **Billing** → pilih akun billing (atau
+   buat baru). GCP mewajibkan link billing walaupun kamu pakai free tier.
+   Selama tetap `e2-micro` di region **us-east1 / us-central1 / us-west1**,
+   kamu **tidak akan ditagih apa-apa**.
+4. **Compute Engine API di-enable** — menu ☰ → **APIs & Services** →
+   **Library** → cari **"Compute Engine API"** → **Enable**. (Bisa juga dari
+   Cloud Shell: `gcloud services enable compute.googleapis.com` — `deploy.sh`
+   juga coba mengaktifkannya otomatis.)
+
+### Cek cepat (kalau ragu)
+
+Buka Cloud Shell (`>_` di kanan atas) lalu ketik:
+
+```bash
+gcloud config get-value project
+gcloud services list --enabled | grep compute.googleapis.com
+billing projects describe <PROJECT_ID> 2>/dev/null | head -2
+```
+
+Kalau `gcloud config get-value project` mengeluarkan ID project dan baris
+compute ada di daftar services → prasyarat beres, lanjut deploy.
+
+## Cara deploy (3 langkah — setelah prasyarat)
 
 1. **Buka Cloud Shell GCP**: https://console.cloud.google.com → klik ikon
    `>_` di kanan atas.
@@ -69,6 +100,25 @@ Default template: `e2-micro` di region free tier (`us-east1` / `us-central1` /
 `us-west1`) + disk 30GB → **masih dalam free tier GCP = gratis**. Kalau kamu
 ubah region / machine type / tambah disk → mulai dikenai biaya. Pasang budget
 alert di GCP Billing supaya gak kaget.
+
+## FAQ (biar gak panik)
+
+**"Gratis kok minta kartu/billing?"** — GCP selalu minta billing ter-link
+sebagai syarat (semua project). Tagihan tetap 0 selama kamu pakai e2-micro di
+region US (free tier). Bisa pasang budget alert di Billing → Budget & alerts.
+
+**"Error: Cloud Billing API disabled" saat deploy** — billing belum ter-link.
+Lihat Prasyarat nomor 3.
+
+**"Error: Compute Engine API has not been used"** — API belum di-enable.
+Lihat Prasyarat nomor 4.
+
+**"Error: does not have enough resources"** — zona lagi penuh. Ganti
+`ZONE=` di `.env` (coba `us-central1-a`, `us-west1-b`, `us-east1-b`, dst).
+
+**"Project ID salah?"** — `deploy.sh` baca `PROJECT_ID` dari `.env`; kalau
+kosong dia pakai project default Cloud Shell. Pastikan ID persis (bukan nama
+project).
 
 ## Upgrade Hermes
 

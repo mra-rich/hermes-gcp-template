@@ -86,6 +86,15 @@ deploy_cmd() {
   echo "→ Project : $PROJECT_ID"
   echo "→ VM      : $VM_NAME ($MACHINE_TYPE @ $ZONE)"
 
+  # 0. Pastikan Compute Engine API aktif (otomatis coba enable kalau belum)
+  echo "  * cek Compute Engine API ..."
+  if ! "$GCLOUD_BIN" services list --enabled --project "$PROJECT_ID" 2>/dev/null \
+       | grep -q "compute.googleapis.com"; then
+    echo "    (belum aktif → coba enable otomatis ...)"
+    "$GCLOUD_BIN" services enable compute.googleapis.com --project "$PROJECT_ID" \
+      || { echo "✗ Gagal enable API — cek Prasyarat README (billing/izin)."; exit 1; }
+  fi
+
   # salinan startup-script dengan IMAGE sesuai .env (biar gampang ganti image di reset)
   START_TMP="/tmp/hermes-startup-$$.sh"
   sed "s|^IMAGE=.*|IMAGE=\"$IMAGE\"|" startup-script.sh > "$START_TMP"
